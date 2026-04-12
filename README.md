@@ -9,7 +9,7 @@
 
 ---
 
-## Screenshots
+## 📸 Screenshots
 
 ### Home Page
 ![Home Page](screenshots/homepage.png)
@@ -22,52 +22,69 @@
 
 ---
 
-## Key Features
+## 🔑 Demo Credentials
+
+To explore the different modules of the platform, you can use the following test accounts:
+
+### 🛡️ Admin Module
+- **Username**: `admin`
+- **Password**: `admin`
+
+### 🔧 Service Provider Module
+- **Username**: `serviceprovider`
+- **Password**: `serviceprovider`
+
+### 👤 User Module
+- **Username**: `user`
+- **Password**: `user`
+
+---
+
+## 🚀 Key Features
 
 - **Dual Authentication**: Dedicated portals for both Customers and Service Professionals.
-- - **Service Categories**: Browse categorized services like Cleaning, Plumbing, Electrical, etc.
-  - - **Booking Management**: Real-time booking system with status tracking.
-    - - **Secure Payments**: Integrated with Razorpay for safe and seamless transactions.
-      - - **Reviews & Ratings**: Transparent feedback system to ensure high-quality service.
-       
-        - ---
+- **Service Categories**: Browse categorized services like Cleaning, Plumbing, Electrical, etc.
+- **Booking Management**: Real-time booking system with status tracking.
+- **Secure Payments**: Integrated with Razorpay for safe and seamless transactions.
+- **Reviews & Ratings**: Transparent feedback system to ensure high-quality service.
 
-        ## Tech Stack
+---
 
-        - **Backend**: Django (Python)
-        - - **Frontend**: HTML, CSS, JavaScript (Bootstrap)
-          - - **Database**: Neon (PostgreSQL) for Production
-            - - **Deployment**: Vercel
-              - - **Payments**: Razorpay API
-               
-                - ---
+## 🛠️ Tech Stack
 
-                ## Installation & Setup
+- **Backend**: Django (Python)
+- **Frontend**: HTML, CSS, JavaScript (Bootstrap)
+- **Database**: Neon (PostgreSQL) for Production
+- **Deployment**: Vercel
+- **Payments**: Razorpay API
 
-                1. **Clone the repository:**
-                2.    ```bash
-                         git clone https://github.com/vishnucax/fixitnow-home-service-providing-platform.git
-                         cd fixitnow-home-service-providing-platform
-                         ```
+---
 
-                      2. **Install dependencies:**
-                      3.    ```bash
-                               pip install -r requirements.txt
-                               ```
+## 📥 Installation & Setup
 
-                            3. **Run Migrations:**
-                            4.    ```bash
-                                     python manage.py migrate
-                                     ```
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/vishnucax/fixitnow-home-service-providing-platform.git
+   cd fixitnow-home-service-providing-platform
+   ```
 
-                                  4. **Start the server:**
-                                  5.    ```bash
-                                           python manage.py runserver
-                                           ```
+2. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-                                        ---
+3. **Run Migrations:**
+   ```bash
+   python manage.py migrate
+   ```
 
-                                    ## License
+4. **Start the server:**
+   ```bash
+   python manage.py runserver
+   ```
 
-                              MIT License
-                        
+---
+
+## 📄 License
+
+MIT License
