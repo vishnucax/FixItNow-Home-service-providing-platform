@@ -1,14 +1,1 @@
-import os, django; os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'HomeServiceManagement.settings'); django.setup()
-from django.contrib.auth.models import User
-from home_service.models import *
-try: User.objects.create_superuser('admin', 'a@a.com', 'admin')
-      except: pass
-            try:
-                   u1 = User.objects.create_user('serviceprovider', 's@s.com', 'serviceprovider')
-                   Service_Man.objects.create(user=u1, name='S', contact='1', address='A', id_card='I')
-                  except: pass
-                        try:
-                               u2 = User.objects.create_user('user', 'u@u.com', 'user')
-                               Customer.objects.create(user=u2, name='U', contact='2', address='B')
-                              except: pass
-                                    
+import os, django; os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'HomeServiceManagement.settings'); django.setup(); from django.contrib.auth.models import User; from home_service.models import *; exec("try:\n User.objects.create_superuser('admin','a@a.com','admin')\nexcept:pass\ntry:\n u1=User.objects.get_or_create(username='serviceprovider',defaults={'email':'s@s.com'})[0]\n u1.set_password('serviceprovider');u1.save()\n Service_Man.objects.get_or_create(user=u1,defaults={'name':'S','contact':'1','address':'A','id_card':'I'})\nexcept:pass\ntry:\n u2=User.objects.get_or_create(username='user',defaults={'email':'u@u.com'})[0]\n u2.set_password('user');u2.save()\n Customer.objects.get_or_create(user=u2,defaults={'name':'U','contact':'2','address':'B'})\nexcept:pass")
