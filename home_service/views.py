@@ -81,7 +81,10 @@ def Home(request):
         name = request.POST.get("name")
         email = request.POST.get("email")
         message = request.POST.get("message")
-        status = Status.objects.get(status="unread")
+        try:
+            status = Status.objects.get(status="unread")
+        except Status.DoesNotExist:
+            status = Status.objects.create(status="unread")
         Contact.objects.create(status=status, name=name, email=email, message1=message)
         contact_submitted = True
 
@@ -131,7 +134,10 @@ def contact(request):
         n = request.POST['name']
         e = request.POST['email']
         m = request.POST['message']
-        status = Status.objects.get(status="unread")
+        try:
+            status = Status.objects.get(status="unread")
+        except Status.DoesNotExist:
+            status = Status.objects.create(status="unread")
         Contact.objects.create(status=status,name=n,email=e,message1=m)
         error=True
     d = {'error':error}
@@ -218,32 +224,37 @@ class LoginUserView(View):
         user = authenticate(username=u, password=p)
 
         if user:
+            # 1. Try Customer
             try:
                 sign = Customer.objects.get(user=user)
+                login(request, user)
+                return redirect('user_home')
             except Customer.DoesNotExist:
-                sign = None
+                pass
 
-            if sign:
-                login(request, user)
-                return redirect('user_home')  # Redirect if a Customer
-
+            # 2. Try Service Professional
             try:
-                stat = Status.objects.get(status="Accept")
-                pure = Service_Man.objects.get(status=stat, user=user)
+                try:
+                    stat = Status.objects.get(status="Accept")
+                except Status.DoesNotExist:
+                    stat = Status.objects.create(status="Accept")
+                
+                pure = Service_Man.objects.get(user=user)
+                if pure.status == stat:
+                    login(request, user)
+                    return redirect('user_home')
+                else:
+                    messages.error(request, "pending_profile")
+                    return redirect('login')
             except Service_Man.DoesNotExist:
-                pure = None
+                pass
 
-            if pure:
-                login(request, user)
-                return redirect('user_home')  # Redirect if a Service_Man
-
+            # 3. Default (log them in if they exist but aren't one of the above, e.g. generic user)
             login(request, user)
-            return redirect('login')  # Default redirect
+            return redirect('user_home')
         else:
-            messages.error(request, "no_account")  # Show modal on login failure
+            messages.error(request, "no_account")
             return redirect('login')
-
-        return render(request, self.template_name)
 
     
 class LoginAdminView(View):
@@ -293,10 +304,24 @@ def Signup_User(request):
             user = User.objects.create_user(email=e, username=u, password=p, first_name=f, last_name=l)
             
             if type == "customer":
-                Customer.objects.create(user=user, contact=con, address=add, image=im)
+                customer = Customer.objects.create(user=user, contact=con, address=add)
+                try:
+                    customer.image = im
+                    customer.save()
+                except OSError:
+                    pass
             else:
-                stat = Status.objects.get(status='pending')
-                Service_Man.objects.create(doj=dat, image=im, user=user, contact=con, address=add, status=stat)
+                try:
+                    stat = Status.objects.get(status='pending')
+                except Status.DoesNotExist:
+                    stat = Status.objects.create(status='pending')
+                
+                service_man = Service_Man.objects.create(doj=dat, user=user, contact=con, address=add, status=stat)
+                try:
+                    service_man.image = im
+                    service_man.save()
+                except OSError:
+                    pass
 
             error = "create"
 
@@ -420,7 +445,10 @@ def Customer_Booking(request, pid):
         price = ser1.price * ho  # Calculate price based on static hours
         
         print(price)
-        st = Status.objects.get(status="pending")
+        try:
+            st = Status.objects.get(status="pending")
+        except Status.DoesNotExist:
+            st = Status.objects.create(status="pending")
         
         Order.objects.create(
             status=st,
@@ -489,7 +517,10 @@ def Explore_Service(request,pid):
     except:
         pass
     ser = Service_Category.objects.get(id=pid)
-    sta = Status.objects.get(status="Accept")
+    try:
+        sta = Status.objects.get(status="Accept")
+    except Status.DoesNotExist:
+        sta = Status.objects.create(status="Accept")
     order = Service_Man.objects.filter(service_name=ser.category,status=sta)
     d = {'error': error,'ser':ser,'order':order}
     return render(request,'explore_services.html',d)
@@ -516,7 +547,7 @@ def Edit_Profile(request):
             i = request.FILES['image']
             sign.image=i
             sign.save()
-        except:
+        except (KeyError, OSError):
             pass
         ad = request.POST['address']
         e = request.POST['email']
@@ -614,14 +645,14 @@ def Edit_Service_Profile(request):
             i = request.FILES['image']
             sign.image = i
             sign.save()
-        except:
+        except (KeyError, OSError):
             pass
         
         try:
             i1 = request.FILES['image1']
             sign.id_card = i1
             sign.save()
-        except:
+        except (KeyError, OSError):
             pass
         
         ad = request.POST['address']
@@ -683,7 +714,7 @@ def Edit_Admin_Profile(request):
             i = request.FILES['image']
             pro.image=i
             pro.save()
-        except:
+        except (KeyError, OSError):
             pass
         ad = request.POST['address']
         e = request.POST['email']
@@ -773,9 +804,14 @@ def Add_Service(request):
     error=False
     if request.method == "POST":
         n = request.POST['cat']
-        i = request.FILES['image']
         de = request.POST['desc']
-        Service_Category.objects.create(category=n,image=i,desc=de)
+        category = Service_Category.objects.create(category=n,desc=de)
+        try:
+            i = request.FILES['image']
+            category.image = i
+            category.save()
+        except (KeyError, OSError):
+            pass
         error=True
     d = {'error':error}
     return render(request,'add_service.html',d)
@@ -792,7 +828,7 @@ def Edit_Service(request,pid):
             i = request.FILES['image']
             ser.image = i
             ser.save()
-        except:
+        except (KeyError, OSError):
             pass
         de = request.POST['desc']
         ser.category = n
@@ -962,7 +998,10 @@ def search_services(request):
 
 def new_message(request):
     
-    sta = Status.objects.get(status='unread')
+    try:
+        sta = Status.objects.get(status='unread')
+    except Status.DoesNotExist:
+        sta = Status.objects.create(status='unread')
     pro1 = Contact.objects.filter(status=sta)
     d = {'ser':pro1}
     return render(request,'new_message.html',d)

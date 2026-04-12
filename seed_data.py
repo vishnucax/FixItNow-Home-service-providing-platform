@@ -12,9 +12,11 @@ def seed():
     print("Starting data seeding...")
     
     # Create Statuses
-    statuses = ['pending', 'Accept', 'unread']
+    statuses = ['pending', 'Accept', 'unread', 'read']
     for s in statuses:
-        Status.objects.get_or_create(status=s)
+        obj, created = Status.objects.get_or_create(status=s)
+        if created:
+            print(f"Status '{s}' created.")
     
     # Create Cities
     City.objects.get_or_create(city="New York")

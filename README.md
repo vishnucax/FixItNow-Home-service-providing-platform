@@ -1,4 +1,4 @@
-![FixItNow Banner](banner.png)
+
 
 # FixItNow - Professional Home Service Providing Platform
 
