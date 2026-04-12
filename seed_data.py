@@ -7,12 +7,12 @@ from home_service.models import Status, Customer, Service_Man, City
 def seed():
     if not User.objects.filter(username="admin").exists():
           User.objects.create_superuser("admin", "admin@example.com", "admin")
-        if not User.objects.filter(username="serviceprovider").exists():
+    f not User.objects.filter(username="serviceprovider").exists():
               u = User.objects.create_user("serviceprovider", "sp@example.com", "serviceprovider")
               Service_Man.objects.create(user=u, name="SP", contact="1", address="A", id_card="I")
-            if not User.objects.filter(username="user").exists():
+        f not User.objects.filter(username="user").exists():
                   u = User.objects.create_user("user", "u@example.com", "user")
                   Customer.objects.create(user=u, name="U", contact="2", address="B")
-              if __name__ == "__main__":
+    f __name__ == "__main__":
                   seed()
                 
